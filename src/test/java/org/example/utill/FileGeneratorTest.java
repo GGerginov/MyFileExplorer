@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -68,5 +69,15 @@ class FileGeneratorTest {
         boolean result = FileGenerator.generateFiles(invalidPath, numFiles);
 
         assertFalse(result, "Expected generateFiles to return false");
+    }
+
+    @Test
+    void testConstructorMustTrow() throws NoSuchMethodException {
+
+        Constructor<FileGenerator> constructor = FileGenerator.class.getDeclaredConstructor();
+
+        constructor.setAccessible(true);
+
+        assertThrows(Exception.class, constructor::newInstance);
     }
 }

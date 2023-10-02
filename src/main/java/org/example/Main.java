@@ -3,6 +3,8 @@ package org.example;
 import org.example.finder.TextFinder;
 import org.example.utill.FileGenerator;
 
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -20,7 +22,9 @@ public class Main {
 
         System.out.print(System.lineSeparator());
 
-        TextFinder.findText(textToSearch, path).forEach(f -> System.out.printf("%s %d %n",f.getFileName(),f.toFile().length()));
+        List<Path> text = TextFinder.findText(textToSearch, path);
+
+        text.forEach(f -> System.out.printf("%s %d %n",f.getFileName(),f.toFile().length()));
     }
 
 

@@ -22,14 +22,12 @@ class TextFinderTest {
 
     Path tempDir;
     Path tempFile1;
-
     Path tempFile2;
 
     @BeforeEach
     void setUp() {
-
         try {
-            tempDir = Files.createTempDirectory(Path.of(PATH),"test");
+            tempDir = Files.createTempDirectory(Path.of(PATH), "test");
             tempFile1 = Files.createTempFile(tempDir, "testfile1", ".txt");
             Files.write(tempFile1, "This is a sample file for testing. Lorem ipsum".getBytes());
 
@@ -42,7 +40,6 @@ class TextFinderTest {
 
     @AfterEach
     void tearDown() {
-
         try {
             Files.walk(tempDir)
                     .sorted(Comparator.reverseOrder())
@@ -55,48 +52,49 @@ class TextFinderTest {
 
     @Test
     void findTextIfStringIsNullMustTrow() {
-
-        assertThrows(IllegalArgumentException.class,()-> TextFinder.findText(null,PATH));
+        assertThrows(IllegalArgumentException.class, () -> TextFinder.findText(null, PATH));
     }
-
 
     @Test
     void findTextIfStringIsEmptyMustTrow() {
-
-        assertThrows(IllegalArgumentException.class,()-> TextFinder.findText("",PATH));
+        assertThrows(IllegalArgumentException.class, () -> TextFinder.findText("", PATH));
     }
 
     @Test
     void testConstructorInitializeMustTrow() {
-
         assertThrows(IllegalStateException.class, () -> {
             try {
                 Constructor<?> constructor = TextFinder.class.getDeclaredConstructor();
-
                 constructor.setAccessible(true);
                 constructor.newInstance();
-
             } catch (InvocationTargetException e) {
-
                 throw e.getTargetException();
             }
         });
     }
 
-
     @Test
     void testFindTextCorrectlyReturnsFirstFile() {
-
         List<Path> listFiles = TextFinder.findText("demo", tempDir.toString());
-
         assertTrue(listFiles.contains(tempFile2));
     }
 
     @Test
     void testFindTextCorrectlyReturnsSecondFile() {
-
         List<Path> listFiles = TextFinder.findText("testing", tempDir.toString());
-
         assertTrue(listFiles.contains(tempFile1));
     }
+
+
+    @Test
+    void testFindTextWhenTextNotEmptyAndPathValidThenReturnResult() {
+        List<Path> listFiles = TextFinder.findText("Lorem ipsum", tempDir.toString());
+        assertTrue(listFiles.contains(tempFile1));
+    }
+
+    @Test
+    void testFindTextWhenTextEmptyAndPathValidThenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> TextFinder.findText("", tempDir.toString()));
+    }
+
 }
