@@ -14,6 +14,11 @@ public class TextFinder {
     }
 
     public static List<Path> findText(String textToSearch, String path) {
+
+        if(textToSearch == null || textToSearch.isEmpty()){
+            throw new IllegalArgumentException("Your text is not valid");
+        }
+
         FileTextRecognitionVisitor fileTextRecognitionVisitor = new FileTextRecognitionVisitor(textToSearch);
 
         try {
@@ -22,6 +27,6 @@ public class TextFinder {
             throw new RuntimeException(e);
         }
 
-        return fileTextRecognitionVisitor.getValidFiles();
+        return fileTextRecognitionVisitor.getFileContainsText();
     }
 }
