@@ -15,9 +15,18 @@ import java.util.zip.ZipFile;
  */
 public class FileTextRecognitionVisitor extends SimpleFileVisitor<Path> {
 
-    private static final List<String> ARCHIVE_SIGNATURE = List.of("0x504B0304","0x377ABCAF271C","0x526172211A0700"
-            ,"0x1F8B08","0x425A68","0x7573746172","0x504B0304","0x1F8B08");
-
+    private static final List<byte[]> ARCHIVE_SIGNATURE = List.of(
+            new byte[] { 0x50, 0x4B, 0x03, 0x04 },
+            new byte[] { 0x37, 0x7A, (byte) 0xBC, (byte) 0xAF, 0x27, 0x1C },
+            new byte[] { 0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00 },
+            new byte[] { 0x1F, (byte) 0x8B, 0x08 },
+            new byte[] { 0x42, 0x5A, 0x68 },
+            new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72 },
+            new byte[] { 0x50, 0x4B, 0x03, 0x04 },
+            new byte[] { 0x1F, (byte) 0x8B, 0x08 },
+            new byte[] { 0x20, 0x00, 0x08, 0x00 },
+            new byte[] { 20, 0, 8, 0}
+    );
     /**
      * The list of files that contain the specified text.
      */
@@ -194,14 +203,20 @@ public class FileTextRecognitionVisitor extends SimpleFileVisitor<Path> {
             return false;
         }
 
-        int fileSignature = 0;
+        byte[] fileSignature = new byte[4];
         try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
-            fileSignature = raf.readInt();
+            raf.read(fileSignature);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return ARCHIVE_SIGNATURE.contains(String.valueOf(fileSignature));
+
+        for (byte[] signature : ARCHIVE_SIGNATURE) {
+            if (Arrays.equals(fileSignature, signature)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
