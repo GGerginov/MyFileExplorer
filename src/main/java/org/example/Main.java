@@ -10,13 +10,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        String path = args[0];
 
-        System.out.print("Enter a valid path: ");
-        String path = scanner.nextLine();
-
-        System.out.print("Enter a text to search: ");
-        String textToSearch = scanner.nextLine();
+        String textToSearch = args[1];
 
         FileGenerator.generateFiles(path,10);
 
